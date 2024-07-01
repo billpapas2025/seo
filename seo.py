@@ -16,11 +16,11 @@ def get_page_data(url):
         
         # Extraer meta descripción
         meta_description_match = re.search(r'<meta name="description" content="(.*?)"', html, re.IGNORECASE)
-        meta_description = meta_description_match.group(1) if meta_description_match else ''
+        meta_description = meta_description_match.group(1) if meta_description_match else 'No description'
         
         # Extraer meta keywords
         meta_keywords_match = re.search(r'<meta name="keywords" content="(.*?)"', html, re.IGNORECASE)
-        meta_keywords = meta_keywords_match.group(1) if meta_keywords_match else ''
+        meta_keywords = meta_keywords_match.group(1) if meta_keywords_match else 'No keywords'
         
         return {
             "url": url, 
@@ -41,6 +41,7 @@ url = st.text_input("Ingrese la URL para scrapear:", "https://www.example.com")
 if url:
     data = get_page_data(url)
     if data:
+        st.subheader("Resultados del Scraping")
         st.write("**Título de la página:**")
         st.write(data["title"])
         st.write("**Meta descripción:**")
