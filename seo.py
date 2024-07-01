@@ -1,26 +1,26 @@
 import requests
-from bs4 import BeautifulSoup
+import re
 import streamlit as st
 
-# Función para scrapear datos de una página web
+# Función para scrapear datos de una página web sin BeautifulSoup
 def get_page_data(url):
     try:
         response = requests.get(url)
         response.raise_for_status()  # Asegurarse de que la solicitud fue exitosa
-        soup = BeautifulSoup(response.text, 'html.parser')
+        
+        html = response.text
         
         # Extraer título de la página
-        title = soup.title.string if soup.title else 'No title'
+        title_match = re.search(r'<title>(.*?)</title>', html, re.IGNORECASE)
+        title = title_match.group(1) if title_match else 'No title'
         
         # Extraer meta descripción
-        meta_description = ''
-        if soup.find("meta", attrs={"name": "description"}):
-            meta_description = soup.find("meta", attrs={"name": "description"})['content']
+        meta_description_match = re.search(r'<meta name="description" content="(.*?)"', html, re.IGNORECASE)
+        meta_description = meta_description_match.group(1) if meta_description_match else ''
         
         # Extraer meta keywords
-        meta_keywords = ''
-        if soup.find("meta", attrs={"name": "keywords"}):
-            meta_keywords = soup.find("meta", attrs={"name": "keywords"})['content']
+        meta_keywords_match = re.search(r'<meta name="keywords" content="(.*?)"', html, re.IGNORECASE)
+        meta_keywords = meta_keywords_match.group(1) if meta_keywords_match else ''
         
         return {
             "url": url, 
